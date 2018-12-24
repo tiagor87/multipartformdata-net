@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace>MultiPartFormDataNet.Core</RootNamespace>
+        <PackageId>MultiPartFormDataNet.Core</PackageId>
+        <Title>MultiPartFormDataNet.Core</Title>
+        <Authors>Tiago Resende</Authors>
+        <Description>A simple utility to retrieve uploaded file and data from Request without load all data into memory</Description>
+        <PackageTags>multipartformdata formdata upload file</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0"/>
+        <PackageReference Include="Microsoft.Net.Http.Headers" Version="2.2.0"/>
+    </ItemGroup>
+
+</Project>
