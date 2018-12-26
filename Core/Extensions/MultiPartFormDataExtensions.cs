@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -40,15 +42,16 @@ namespace MultiPartFormDataNet.Core.Extensions
             var properties = obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public).ToList();
             properties.ForEach(property =>
             {
-                if (property.PropertyType.IsArray)
+                if (property.PropertyType.IsArray ||
+                    (property.PropertyType.GetInterface(nameof(IEnumerable)) != null &&
+                     property.PropertyType != typeof(string)))
                 {
-                    var vector = (object[]) property.GetValue(obj);
-                    vector
-                        .ToList()
-                        .ForEach(value => content.Add(new StringContent(value.ToString()), $"{property.Name}[]"));
+                    var list = (IEnumerable<object>) property.GetValue(obj);
+                    list.ToList().ForEach(value =>
+                        content.Add(new StringContent(value.ToString()), $"{property.Name}[]"));
                 }
                 else
-                {
+                { 
                     content.Add(new StringContent(property.GetValue(obj).ToString()), property.Name);
                 }
             });

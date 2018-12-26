@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -12,12 +13,12 @@ namespace MultiPartFormDataNet.Core.Tests
 {
     public class MultiPartFormDataExtensionsTests : IClassFixture<IntegrationTestsWebAppFactory>
     {
+        private readonly HttpClient _client;
+
         public MultiPartFormDataExtensionsTests(IntegrationTestsWebAppFactory factory)
         {
             _client = factory.CreateClient();
         }
-
-        private readonly HttpClient _client;
 
         [Fact]
         public async Task Should_upload_file_and_data_on_multipart_form_data()
@@ -31,7 +32,8 @@ namespace MultiPartFormDataNet.Core.Tests
                 TextProperty = text,
                 IntProperty = integer,
                 ArrayProperty = vector,
-                UniqueIdProperty = uniqueId
+                UniqueIdProperty = uniqueId,
+                ListProperty = vector.ToList()
             };
 
             var content = new MultipartFormDataContent();
@@ -46,7 +48,8 @@ namespace MultiPartFormDataNet.Core.Tests
             dto.Request.TextProperty.Should().Be(text);
             dto.Request.IntProperty.Should().Be(integer);
             dto.Request.ArrayProperty.Should().BeEquivalentTo(vector);
-            dto.Length.Should().Be(31000);
+            dto.Request.ListProperty.Should().BeEquivalentTo(vector.ToList());
+            dto.Length.Should().BeGreaterOrEqualTo(31000);
         }
 
         [Fact]
@@ -59,7 +62,7 @@ namespace MultiPartFormDataNet.Core.Tests
             var dto = JsonConvert.DeserializeObject<ResponseDto>(await response.Content.ReadAsStringAsync());
 
             dto.Should().NotBeNull();
-            dto.Length.Should().Be(31000);
+            dto.Length.Should().BeGreaterOrEqualTo(31000);
         }
     }
 }
